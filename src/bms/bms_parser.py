@@ -7,11 +7,17 @@ logger = logging.getLogger(__name__)
 
 
 def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
-    logger.debug(f"Decode message: {inc_data}")
+    logger.debug(
+        f"Decode message: {inc_data[:60]+b'...' if len(inc_data)>60 else inc_data}"
+    )
     try:
+        if len(inc_data) < 14:  # Minimum size
+            logger.error(f"Error decode data - Input too short - {inc_data}")
+            return (False, b"")
+
         SOI = hex(ord(inc_data[0:1]))
         if SOI != "0x7e":
-            logger.warning(f"Error decode data - Incorrect SOI\n    {SOI=}")
+            logger.error(f"Error decode data - Incorrect SOI\n    {SOI=}")
             return (False, b"")
 
         # VER = inc_data[1:3]
@@ -44,15 +50,47 @@ def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
         logger.info(
             f"Message decode and validate :\n   {RTN=}\n   {LENID=}\n   INFO={INFO[:60]+b'...' if len(INFO)>60 else INFO}"
         )
-        return (False, INFO)
+        return (True, INFO)
 
     except Exception as e:
         logger.exception("Error during decode input")
         return (False, b"")
 
 
-def bms_send_data(inc_data):
-    pass
+def bms_encode_data(
+    cid2: bytes,
+    info: bytes = b"",
+    ver: bytes = b"\x32\x32",
+    adr: bytes = b"\x30\x31",
+    cid1: bytes = b"\x34\x41",
+) -> Tuple[bool, bytes]:
+    request = b"\x7e"  # SOI
+    request += ver
+    request += adr
+    request += cid1
+    if not cid2:
+        logger.error(f"Error encode data - No CID2")
+        return (False, b"")
+    request += cid2
+    lenid = bytes(format(len(info), "03X"), "ASCII")
+    lchecksum = bytes(lchksum_calc(lenid), "ASCII")
+    if not lchecksum:
+        logger.error(f"Error encode data - Error calcul LCHEKSUM")
+        return (False, b"")
+    logger.debug(f"Encode data - calcul {lchecksum=} with {lenid=}")
+    request += lchecksum
+    request += lenid
+    request += info
+
+    checksum = bytes(chksum_calc(request[1:]), "ASCII")
+    # checksum = b"fe25"
+    if not checksum:
+        logger.error(f"Error encode data - Error calcul CHEKSUM")
+        return (False, b"")
+    logger.debug(f"Encode data - calcul {checksum=} with {request=}")
+    request += checksum
+    request += b"\x0d"
+    return (True, request)
 
 
 def lchksum_calc(lenid: bytes) -> str:
