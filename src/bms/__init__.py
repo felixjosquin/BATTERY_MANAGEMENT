@@ -1,6 +1,5 @@
 import logging
-
-from .bms_parser import bms_decode_data, bms_encode_data
+from .bms_api import getAnologData
 
 logger = logging.getLogger(__name__)
 
@@ -11,4 +10,4 @@ if logger.hasHandlers:
     logger.addHandler(console_handler)
     logger.setLevel(logging.DEBUG)
 
-__all__ = ["bms_decode_data", "bms_encode_data"]
+__all__ = ["getAnologData"]

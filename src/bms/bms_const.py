@@ -1,4 +1,4 @@
-from enum import Enum
+from .bms_type import BMS_COMMAND
 
 EOI = b"\x0d"
 SOI = b"\x7e"
@@ -11,5 +11,6 @@ RTN_ERRORS: dict[bytes, str] = {
 }
 
 
-class CID2_VALUES(Enum):
-    ANALOG_VALUE = b"42"
+CID2_VALUES: dict[BMS_COMMAND, str] = {
+    BMS_COMMAND.GET_ANALOG_VALUE: b"42",
+}
