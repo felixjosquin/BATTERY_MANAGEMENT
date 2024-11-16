@@ -7,15 +7,16 @@ logger = logging.getLogger(__name__)
 
 
 def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
+    logger.debug(f"Decode message: {inc_data}")
     try:
         SOI = hex(ord(inc_data[0:1]))
         if SOI != "0x7e":
             logger.warning(f"Error decode data - Incorrect SOI\n    {SOI=}")
             return (False, b"")
 
-        VER = inc_data[1:3]
-        ADR = inc_data[3:5]
-        CID1 = inc_data[5:7]
+        # VER = inc_data[1:3]
+        # ADR = inc_data[3:5]
+        # CID1 = inc_data[5:7]
         RTN = inc_data[7:9]
         rtn_error = RTN_ERRORS.get(RTN, "Undefined RTN error")
         if rtn_error:

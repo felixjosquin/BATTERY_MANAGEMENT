@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 if logger.hasHandlers:
     console_handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s\n")
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
     logger.setLevel(logging.DEBUG)
