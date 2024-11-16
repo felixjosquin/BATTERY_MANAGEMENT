@@ -1,4 +1,5 @@
 import serial
+import bms
 
 ser = serial.Serial(
     "/dev/ttyUSB0", baudrate=9600, timeout=1
@@ -116,15 +117,14 @@ def getAnologData(brutdata):
 
 try:
     ser.write(data_to_send)
-    print("Data sent:", data_to_send)
+    # print("Data sent:", data_to_send)
 
     response = ser.read_until(b"\x0d")
-    print("Response: " + str(response))
+    # print("Response: " + str(response))
 
-    info = bms_parse_data(response)
-    print()
+    info = bms.bms_decode_data(response)
 
-    getAnologData(info)
+    # getAnologData(info)
 
 
 finally:
