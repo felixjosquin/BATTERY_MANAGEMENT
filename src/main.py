@@ -10,33 +10,6 @@ data_to_send = (
 )
 
 
-def bms_parse_data(inc_data):
-    SOI = hex(ord(inc_data[0:1]))
-    VER = inc_data[1:3]
-    ADR = inc_data[3:5]
-    CID1 = inc_data[5:7]
-    RTN = inc_data[7:9]
-    LCHKSUM = inc_data[9:10]
-    LENID = int(inc_data[10:13], 16)
-
-    print("SOI: ", SOI)
-    print("VER: ", VER)
-    print("ADR: ", ADR)
-    print("CID1: ", CID1)
-    print("RTN: ", RTN)
-    print("LENGTH: ", inc_data[9:13])
-    print("LENID: ", LENID)
-    print("LCHKSUM: ", LCHKSUM)
-
-    INFO = inc_data[13 : 13 + LENID]
-    CHKSUM = inc_data[13 + LENID : 13 + LENID + 4]
-    print("INFO: ", INFO)
-    print("CHKSUM: ", CHKSUM)
-    print(inc_data[13 + LENID + 4 :])
-
-    return INFO
-
-
 def getAnologData(brutdata):
     byte_index = 2
 
