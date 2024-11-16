@@ -1,7 +1,7 @@
 import logging
 from typing import Tuple
 
-from .bms_const import RTN_ERRORS
+from .bms_const import RTN_ERRORS, SOI, EOI
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +15,9 @@ def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
             logger.error(f"Error decode data - Input too short - {inc_data}")
             return (False, b"")
 
-        SOI = hex(ord(inc_data[0:1]))
-        if SOI != "0x7e":
-            logger.error(f"Error decode data - Incorrect SOI\n    {SOI=}")
+        SOI_DATA = inc_data[0:1]
+        if SOI_DATA != SOI:
+            logger.error(f"Error decode data - Incorrect SOI\n    {SOI_DATA=}")
             return (False, b"")
 
         # VER = inc_data[1:3]
@@ -64,7 +64,7 @@ def bms_encode_data(
     adr: bytes = b"\x30\x31",
     cid1: bytes = b"\x34\x41",
 ) -> Tuple[bool, bytes]:
-    request = b"\x7e"  # SOI
+    request = SOI
     request += ver
     request += adr
     request += cid1
@@ -83,13 +83,12 @@ def bms_encode_data(
     request += info
 
     checksum = bytes(chksum_calc(request[1:]), "ASCII")
-    # checksum = b"fe25"
     if not checksum:
         logger.error(f"Error encode data - Error calcul CHEKSUM")
         return (False, b"")
     logger.debug(f"Encode data - calcul {checksum=} with {request=}")
     request += checksum
-    request += b"\x0d"
+    request += EOI
     return (True, request)
 
 
