@@ -48,7 +48,7 @@ def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
             return (False, b"")
 
         logger.info(
-            f"Message decode and validate :\n   {RTN=}\n   {LENID=}\n   INFO={INFO[:60]+b'...' if len(INFO)>60 else INFO}"
+            f"Message decode and validate\n   {RTN=}\n   {LENID=}\n   INFO={INFO[:60]+b'...' if len(INFO)>60 else INFO}"
         )
         return (True, INFO)
 
