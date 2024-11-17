@@ -1,15 +1,25 @@
-import serial
-import bms
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from app.serialManager import SerialManager
+from app.bms import getAnologData
+
+SERIAL_PORT = "/dev/ttyUSB0"
+BAUD_RATE = 9600
+
+serialManager = SerialManager(SERIAL_PORT, BAUD_RATE)
 
 
-try:
-    ser = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1)
-    bms.getAnologData(ser)
-    # sucess, data_to_send = bms.bms_encode_data(b"42", b"01")
-    # print(data_to_send)
-    # ser.write(data_to_send)
-    # response = ser.read_until(b"\x0d")
-    # sucess, info = bms.bms_decode_data(response)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    serialManager.open()
+    yield
+    serialManager.close()
 
-finally:
-    ser.close()
+
+app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/analog_value")
+def get_analog_value():
+    sucess, analogValue = getAnologData(serialManager)
+    return analogValue.__dict__

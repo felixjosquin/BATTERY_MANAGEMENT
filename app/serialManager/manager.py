@@ -16,9 +16,10 @@ class SerialManager:
             if self.connection and self.connection.is_open:
                 return
             self.connection = serial.Serial(self.port, self.baudrate)
-            logger.info(f"Serial port {self.port} opened at {self.baudrate} baud rate")
+            logger.info(f"Serial port {self.port} opened at {self.baudrate} baud rate.")
         except Exception as e:
             logger.exception("Error during opening serial")
+            raise e
 
     def close(self):
         try:
@@ -27,6 +28,7 @@ class SerialManager:
                 logger.info(f"Serial port {self.port} closed.")
         except Exception as e:
             logger.exception("Error during opening serial")
+            raise e
 
     def write(self, data: bytes) -> bool:
         try:
@@ -52,7 +54,7 @@ class SerialManager:
                 )
                 return False
             logger.debug(
-                f"Data received from Serial port {self.port}: {data_rcv[:50] +'...' if len(data_rcv)>50 else data_rcv}"
+                f"Data received from Serial port {self.port}: {data_rcv[:50] +b'...' if len(data_rcv)>50 else data_rcv}"
             )
             return data_rcv
         except Exception as e:

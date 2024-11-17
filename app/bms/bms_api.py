@@ -1,5 +1,5 @@
 import logging
-import serial
+from app.serialManager import SerialManager
 
 from typing import Tuple
 from .bms_const import CID2_VALUES, EOI
@@ -10,7 +10,7 @@ from .bms_type import BMS_ANALOG_VALUE, BMS_COMMAND
 logger = logging.getLogger(__name__)
 
 
-def getAnologData(ser: serial.Serial) -> Tuple[bool, BMS_ANALOG_VALUE]:
+def getAnologData(ser: SerialManager) -> Tuple[bool, BMS_ANALOG_VALUE]:
     try:
         sucess_encode, input = bms_encode_data(
             CID2_VALUES[BMS_COMMAND.GET_ANALOG_VALUE], b"01"
@@ -83,7 +83,7 @@ def getAnologData(ser: serial.Serial) -> Tuple[bool, BMS_ANALOG_VALUE]:
         byte_index += 4
 
         logger.info(
-            f"Analog Data received\n    SOC: {analog_value.soc} %\n    Battery Voltage: {analog_value.batt_volt} V\n    Current: {analog_value.current} A"
+            f"Analog Data received and decode\n    SOC: {analog_value.soc} %\n    Battery Voltage: {analog_value.batt_volt} V\n    Current: {analog_value.current} A"
         )
 
         return (True, analog_value)
