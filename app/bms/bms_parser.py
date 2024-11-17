@@ -7,12 +7,9 @@ logger = logging.getLogger(__name__)
 
 
 def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
-    logger.debug(
-        f"Decode message: {inc_data[:60]+b'...' if len(inc_data)>60 else inc_data}"
-    )
     try:
         if len(inc_data) < 14:  # Minimum size
-            logger.error(f"Error decode data - Input too short - {inc_data}")
+            logger.error(f"Error decode data - Data received too short - {inc_data}")
             return (False, b"")
 
         SOI_DATA = inc_data[0:1]
@@ -47,13 +44,13 @@ def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:
             )
             return (False, b"")
 
-        logger.info(
+        logger.debug(
             f"Message decode and validate\n   {RTN=}\n   {LENID=}\n   INFO={INFO[:60]+b'...' if len(INFO)>60 else INFO}"
         )
         return (True, INFO)
 
     except Exception as e:
-        logger.exception("Error during decode input")
+        logger.exception("Error during decode data received")
         return (False, b"")
 
 
