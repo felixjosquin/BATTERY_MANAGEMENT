@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.serialManager import SerialManager
-from app.bms import getAnologData
+from app.bms import getAnologData, SerialManager
 
 SERIAL_PORT = "/dev/ttyUSB0"
 BAUD_RATE = 9600

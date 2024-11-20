@@ -1,5 +1,6 @@
 import logging
 from .bms_api import getAnologData
+from .serialManager import SerialManager
 
 logger = logging.getLogger(__name__)
 
@@ -10,4 +11,4 @@ if logger.hasHandlers:
     logger.addHandler(console_handler)
     logger.setLevel(logging.DEBUG)
 
-__all__ = ["getAnologData"]
+__all__ = ["getAnologData", "SerialManager"]

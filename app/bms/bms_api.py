@@ -1,5 +1,5 @@
 import logging
-from app.serialManager import SerialManager
+from app.bms import SerialManager
 
 from typing import Tuple
 from .bms_const import CID2_VALUES, EOI
