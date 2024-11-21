@@ -1,11 +1,10 @@
 import logging
-from app.bms import SerialManager
 
 from typing import Tuple
 from .bms_const import CID2_VALUES, EOI
 from .bms_parser import bms_encode_data, bms_decode_data
 from .bms_type import BMS_ANALOG_VALUE, BMS_COMMAND
-
+from .serialManager import SerialManager
 
 logger = logging.getLogger(__name__)
 
