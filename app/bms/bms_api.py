@@ -44,24 +44,24 @@ def getAnologData(ser: SerialManager) -> Tuple[bool, BMS_ANALOG_VALUE]:
         ]
         byte_index += 4 * nb_cells
 
-        analog_value.env_temp = int(info[byte_index : byte_index + 4], 16) / 10
+        analog_value.env_temp = int(info[byte_index : byte_index + 4], 16) / 10.0
         byte_index += 4
-        analog_value.pack_temp = int(info[byte_index : byte_index + 4], 16) / 10
+        analog_value.pack_temp = int(info[byte_index : byte_index + 4], 16) / 10.0
         byte_index += 4
-        analog_value.mos_temp = int(info[byte_index : byte_index + 4], 16) / 10
+        analog_value.mos_temp = int(info[byte_index : byte_index + 4], 16) / 10.0
         byte_index += 4
 
         nb_temp = int(info[byte_index : byte_index + 2], 16)
         byte_index += 2
 
         analog_value.temp = [
-            int(info[byte_index + 4 * i : byte_index + 4 * (i + 1)], 16) / 10
+            int(info[byte_index + 4 * i : byte_index + 4 * (i + 1)], 16) / 10.0
             for i in range(nb_temp)
         ]
         byte_index += 4 * nb_temp
 
         analog_value.current = (
-            get_unsigned_value(info[byte_index : byte_index + 4]) / 100
+            get_unsigned_value(info[byte_index : byte_index + 4]) / 100.0
         )
         byte_index += 4
 
@@ -72,10 +72,10 @@ def getAnologData(ser: SerialManager) -> Tuple[bool, BMS_ANALOG_VALUE]:
 
         byte_index += 2
 
-        analog_value.full_cap = int(info[byte_index : byte_index + 4], 16) / 100
+        analog_value.full_cap = int(info[byte_index : byte_index + 4], 16) / 100.0
         byte_index += 4
 
-        analog_value.remain_cap = int(info[byte_index : byte_index + 4], 16) / 100
+        analog_value.remain_cap = int(info[byte_index : byte_index + 4], 16) / 100.0
         byte_index += 4
 
         analog_value.nb_cycle = int(info[byte_index : byte_index + 4], 16)
