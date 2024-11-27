@@ -27,7 +27,7 @@ class SerialManager:
                 self.connection.close()
                 logger.info(f"Serial port {self.port} closed.")
         except Exception as e:
-            logger.exception("Error during opening serial")
+            logger.exception("Error during close serial")
             raise e
 
     def write(self, data: bytes) -> bool:

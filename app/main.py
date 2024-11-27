@@ -27,4 +27,4 @@ app = FastAPI(lifespan=lifespan)
 def get_analog_value(db: Annotated[Session, Depends(get_db)]):
     sucess, analogValue = getAnologData(serialManager)
     creat_bms_Record(db, analogValue)
-    return analogValue.__dict__
+    return analogValue
