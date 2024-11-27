@@ -1,14 +1,16 @@
 import logging
-from .bms_api import getAnologData
+from .bms_api import get_analog_data
 from .serialManager import SerialManager
+from app import get_config
 
 logger = logging.getLogger(__name__)
+config = get_config()
 
 if logger.hasHandlers:
     console_handler = logging.StreamHandler()
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(config.LOGING_LEVEL)
 
-__all__ = ["getAnologData", "SerialManager"]
+__all__ = ["get_analog_data", "SerialManager"]

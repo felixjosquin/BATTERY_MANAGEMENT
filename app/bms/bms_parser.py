@@ -1,9 +1,32 @@
 import logging
 from typing import Tuple
-
-from .bms_const import RTN_ERRORS, SOI, EOI
+from app.config import get_config
+from .serialManager import SerialManager
+from .bms_const import RTN_ERRORS, SOI, EOI, BMS_DEV_REPONSE
 
 logger = logging.getLogger(__name__)
+config = get_config()
+
+
+def bms_request(ser: SerialManager, cid2: bytes, **kwargs) -> Tuple[bool, bytes]:
+    try:
+        sucess_encode, input = bms_encode_data(cid2, **kwargs)
+        if not sucess_encode:
+            return False
+        if config.DROP_TABLES_BEFORE_STARTING:
+            response = BMS_DEV_REPONSE[input]
+        else:
+            ser.write(input)
+            response = ser.read_until(EOI)
+        if not response:
+            return False
+        sucess_decode, info = bms_decode_data(response)
+        if not sucess_decode:
+            return False
+        return True, info
+    except Exception as e:
+        logger.exception("Analog read exception")
+        return False
 
 
 def bms_decode_data(inc_data: bytes) -> Tuple[bool, bytes]:

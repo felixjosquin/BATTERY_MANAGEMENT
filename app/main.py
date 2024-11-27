@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 from fastapi import Depends, FastAPI
 from sqlmodel import Session
-from app.bms import getAnologData, SerialManager
+from app.bms import get_analog_data, SerialManager
 from app.database import creat_bms_Record, get_db, create_db_and_tables
 
 
@@ -25,6 +25,6 @@ app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def get_analog_value(db: Annotated[Session, Depends(get_db)]):
-    sucess, analogValue = getAnologData(serialManager)
+    sucess, analogValue = get_analog_data(serialManager)
     creat_bms_Record(db, analogValue)
     return analogValue

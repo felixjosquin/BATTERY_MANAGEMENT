@@ -1,10 +1,16 @@
 from sqlmodel import Session, SQLModel, create_engine
+from app import get_config
+
 
 DB_URL = "mysql+pymysql://root:mypassword@localhost:3306/bms"
 engine = create_engine(DB_URL, echo=False)
 
+config = get_config()
+
 
 def create_db_and_tables():
+    if config.DROP_TABLES_BEFORE_STARTING:
+        SQLModel.metadata.drop_all(engine)
     SQLModel.metadata.create_all(engine)
 
 

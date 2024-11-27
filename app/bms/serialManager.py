@@ -1,8 +1,10 @@
 import logging
 from typing import Tuple
 import serial
+from app import get_config
 
 logger = logging.getLogger(__name__)
+config = get_config()
 
 
 class SerialManager:
@@ -13,6 +15,8 @@ class SerialManager:
 
     def open(self):
         try:
+            if config.SKIP_SERIAL_CALL:
+                return
             if self.connection and self.connection.is_open:
                 return
             self.connection = serial.Serial(self.port, self.baudrate)
@@ -23,6 +27,8 @@ class SerialManager:
 
     def close(self):
         try:
+            if config.SKIP_SERIAL_CALL:
+                return
             if self.connection and self.connection.is_open:
                 self.connection.close()
                 logger.info(f"Serial port {self.port} closed.")
