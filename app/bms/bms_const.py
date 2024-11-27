@@ -1,4 +1,4 @@
-from .bms_type import BMS_COMMAND
+from .bms_command import BMS_COMMAND
 
 EOI = b"\x0d"
 SOI = b"\x7e"

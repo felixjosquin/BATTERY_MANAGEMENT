@@ -1,10 +1,9 @@
 from dataclasses import dataclass
-from enum import StrEnum, auto
 from typing import List
 
 
 @dataclass
-class BMS_ANALOG_VALUE:
+class BMS_COMPLETE_RECORD:
     soc: float = None
     batt_volt: float = None
     cells_v: List[float] = None
@@ -17,7 +16,3 @@ class BMS_ANALOG_VALUE:
     full_cap: int = None
     remain_cap: int = None
     nb_cycle: int = None
-
-
-class BMS_COMMAND(StrEnum):
-    GET_ANALOG_VALUE = auto()

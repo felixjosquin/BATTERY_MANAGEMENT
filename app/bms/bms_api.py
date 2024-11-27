@@ -1,15 +1,16 @@
 import logging
+from app.dto import BMS_COMPLETE_RECORD
 
 from typing import Tuple
 from .bms_const import CID2_VALUES, EOI
 from .bms_parser import bms_encode_data, bms_decode_data
-from .bms_type import BMS_ANALOG_VALUE, BMS_COMMAND
 from .serialManager import SerialManager
+from .bms_command import BMS_COMMAND
 
 logger = logging.getLogger(__name__)
 
 
-def getAnologData(ser: SerialManager) -> Tuple[bool, BMS_ANALOG_VALUE]:
+def getAnologData(ser: SerialManager) -> Tuple[bool, BMS_COMPLETE_RECORD]:
     try:
         sucess_encode, input = bms_encode_data(
             CID2_VALUES[BMS_COMMAND.GET_ANALOG_VALUE], b"01"
@@ -26,7 +27,7 @@ def getAnologData(ser: SerialManager) -> Tuple[bool, BMS_ANALOG_VALUE]:
         if not sucess_decode:
             return False
 
-        analog_value = BMS_ANALOG_VALUE()
+        analog_value = BMS_COMPLETE_RECORD()
 
         byte_index = 2
         analog_value.soc = int(info[byte_index : byte_index + 4], 16) / 100.0
