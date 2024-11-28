@@ -2,7 +2,7 @@ import logging
 from typing import Tuple
 import serial
 from app import get_config
-from .bms_const import BMS_DEV_REPONSE, EOI
+from .bms_values import BMS_DEV_REPONSE, EOI
 
 logger = logging.getLogger(__name__)
 config = get_config()

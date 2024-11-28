@@ -1,4 +1,9 @@
-from .bms_command import BMS_COMMAND
+from enum import StrEnum, auto
+
+
+class BMS_COMMAND(StrEnum):
+    GET_ANALOG_VALUE = auto()
+
 
 EOI = b"\x0d"
 SOI = b"\x7e"
