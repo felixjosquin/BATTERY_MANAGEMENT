@@ -1,9 +1,10 @@
+from fastapi import Depends, FastAPI, Request, responses
 from contextlib import asynccontextmanager
 from typing import Annotated
-from fastapi import Depends, FastAPI
 from sqlmodel import Session
-from app.bms import get_analog_data, SerialManager
-from app.database import creat_bms_Record, get_db, create_db_and_tables
+from app.bms import SerialManager
+from app.database import get_db, create_db_and_tables
+from app.service import CustomException, get_current_data
 
 
 SERIAL_PORT = "/dev/ttyUSB0"
@@ -23,8 +24,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
+@app.exception_handler(CustomException)
+async def custom_exception_handler(request: Request, exc: CustomException):
+    return responses.JSONResponse(
+        status_code=500, content={"message": f"Error occurred - {exc.detail}"}
+    )
+
+
 @app.get("/")
 def get_analog_value(db: Annotated[Session, Depends(get_db)]):
-    sucess, analogValue = get_analog_data(serialManager)
-    creat_bms_Record(db, analogValue)
-    return analogValue
+    return get_current_data(db, serialManager)
