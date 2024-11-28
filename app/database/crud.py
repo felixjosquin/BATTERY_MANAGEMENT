@@ -16,7 +16,7 @@ def creat_record(session: Session, data: BMS_COMPLETE_RECORD) -> BMS_ESSENTIAL_R
     return BMS_ESSENTIAL_RECORD(**new_record.model_dump())
 
 
-def get_analog_records_between_dates(
+def get_analog_data_between_dates(
     session: Session, start_date: datetime, end_date: datetime
 ) -> List[BMS_ESSENTIAL_RECORD]:
     query = (
