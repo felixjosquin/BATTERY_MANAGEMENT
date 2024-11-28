@@ -23,6 +23,7 @@ class DateTimeWithTz(TypeDecorator):
 class BMS_Record(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     soc: Decimal = Field(default=0, max_digits=5, decimal_places=2)
+    current: Decimal = Field(default=0, max_digits=4, decimal_places=2)
     batt_volt: Decimal = Field(default=0, max_digits=4, decimal_places=2)
     remain_cap: Decimal = Field(default=0, max_digits=5, decimal_places=2)
     full_cap: Decimal = Field(default=0, max_digits=5, decimal_places=2)
