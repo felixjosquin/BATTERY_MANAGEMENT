@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, Request, responses
 from contextlib import asynccontextmanager
 from typing import Annotated
 from sqlmodel import Session
+
 from app.bms import SerialManager
 from app.database import get_db, create_db_and_tables
 from app.service import CustomException, get_current_data

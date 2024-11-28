@@ -1,6 +1,8 @@
 import logging
 from typing import Tuple
+
 from app.config import get_config
+
 from .serial_manager import SerialManager
 from .bms_values import RTN_ERRORS, SOI, EOI
 

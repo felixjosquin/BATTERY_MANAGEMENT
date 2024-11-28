@@ -1,7 +1,9 @@
 import logging
-from typing import Tuple
 import serial
+from typing import Tuple
+
 from app import get_config
+
 from .bms_values import BMS_DEV_REPONSE, EOI
 
 logger = logging.getLogger(__name__)

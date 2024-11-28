@@ -1,7 +1,8 @@
 import logging
+from typing import Tuple
+
 from app.dto import BMS_COMPLETE_RECORD
 
-from typing import Tuple
 from .bms_values import CID2_VALUES, BMS_COMMAND
 from .bms_parser import bms_request
 from .serial_manager import SerialManager
