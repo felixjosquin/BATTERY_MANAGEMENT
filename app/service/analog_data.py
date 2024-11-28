@@ -6,8 +6,8 @@ from .custom_exceptions import CustomException
 
 
 def get_current_data(db: Session, ser: SerialManager):
-    sucess, analog_value = get_analog_data(ser)
+    sucess, analog_completed_value = get_analog_data(ser)
     if not sucess:
         raise CustomException("Not successfully get analog data")
-    creat_record(db, analog_value)
-    return analog_value
+    creat_record(db, analog_completed_value)
+    return analog_completed_value

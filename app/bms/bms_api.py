@@ -38,18 +38,18 @@ def get_analog_data(ser: SerialManager) -> Tuple[bool, BMS_COMPLETE_RECORD]:
     ]
     byte_index += 4 * nb_cells
 
-    analog_value.env_temp = int(info[byte_index : byte_index + 4], 16) / 10
+    analog_value.env_temp = round(int(info[byte_index : byte_index + 4], 16) / 10)
     byte_index += 4
-    analog_value.pack_temp = int(info[byte_index : byte_index + 4], 16) / 10
+    analog_value.pack_temp = round(int(info[byte_index : byte_index + 4], 16) / 10)
     byte_index += 4
-    analog_value.mos_temp = int(info[byte_index : byte_index + 4], 16) / 10
+    analog_value.mos_temp = round(int(info[byte_index : byte_index + 4], 16) / 10)
     byte_index += 4
 
     nb_temp = int(info[byte_index : byte_index + 2], 16)
     byte_index += 2
 
     analog_value.temp = [
-        int(info[byte_index + 4 * i : byte_index + 4 * (i + 1)], 16) / 10
+        round(int(info[byte_index + 4 * i : byte_index + 4 * (i + 1)], 16) / 10)
         for i in range(nb_temp)
     ]
     byte_index += 4 * nb_temp
