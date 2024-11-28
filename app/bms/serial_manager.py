@@ -2,6 +2,7 @@ import logging
 from typing import Tuple
 import serial
 from app import get_config
+from .bms_const import BMS_DEV_REPONSE, EOI
 
 logger = logging.getLogger(__name__)
 config = get_config()
@@ -36,33 +37,21 @@ class SerialManager:
             logger.exception("Error during close serial")
             raise e
 
-    def write(self, data: bytes) -> bool:
+    def request(self, data_send: bytes) -> Tuple[bool, bytes]:
         try:
+            if config.SKIP_SERIAL_CALL:
+                response = BMS_DEV_REPONSE.get(data_send)
+                return True, response if response else False
             if not self.connection or not self.connection.is_open:
                 logger.error(f"Serial port {self.port} is not open.")
                 return False
-            self.connection.write(data)
-            logger.debug(f"Data send to Serial port {self.port}: {data}")
-            return data
-        except Exception as e:
-            logger.exception(f"Error during send data to {self.port}")
-            return False
-
-    def read_until(self, expected: bytes) -> Tuple[bool, bytes]:
-        try:
-            if not self.connection or not self.connection.is_open:
-                logger.error(f"Serial port {self.port} is not open.")
-                return False
-            data_rcv = self.connection.read_until(expected)
+            self.connection.write(data_send)
+            logger.debug(f"Data send to Serial port {self.port}: {data_send}")
+            data_rcv = self.connection.read_until(EOI)
             if len(data_rcv) == 0:
-                logger.error(
-                    f"No data received from Serial port {self.port} with {expected=}"
-                )
+                logger.error(f"No response from Serial port {self.port}")
                 return False
-            logger.debug(
-                f"Data received from Serial port {self.port}: {data_rcv[:50] +b'...' if len(data_rcv)>50 else data_rcv}"
-            )
-            return data_rcv
+            return True, data_rcv
         except Exception as e:
-            logger.exception(f"Error during send data to {self.port}")
+            logger.exception(f"Error during requesting to {self.port}")
             return False, b""

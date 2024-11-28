@@ -4,7 +4,7 @@ from app.dto import BMS_COMPLETE_RECORD
 from typing import Tuple
 from .bms_const import CID2_VALUES
 from .bms_parser import bms_request
-from .serialManager import SerialManager
+from .serial_manager import SerialManager
 from .bms_command import BMS_COMMAND
 
 logger = logging.getLogger(__name__)

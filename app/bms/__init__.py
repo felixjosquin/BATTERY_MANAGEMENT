@@ -1,6 +1,6 @@
 import logging
 from .bms_api import get_analog_data
-from .serialManager import SerialManager
+from .serial_manager import SerialManager
 from app import get_config
 
 logger = logging.getLogger(__name__)
