@@ -1,5 +1,5 @@
 from .database import get_db, create_db_and_tables
 
-from .crud import creat_bms_Record
+from .crud import creat_record
 
-__all__ = ["creat_bms_Record", "get_db", "create_db_and_tables"]
+__all__ = ["creat_record", "get_db", "create_db_and_tables"]

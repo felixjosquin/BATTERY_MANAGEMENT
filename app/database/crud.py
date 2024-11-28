@@ -4,7 +4,7 @@ from app.dto import BMS_COMPLETE_RECORD
 from .model import BMS_Record
 
 
-def creat_bms_Record(session: Session, data: BMS_COMPLETE_RECORD):
+def creat_record(session: Session, data: BMS_COMPLETE_RECORD):
     new_record = BMS_Record(
         soc=data.soc,
         batt_volt=data.batt_volt,
