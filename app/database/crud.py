@@ -1,19 +1,13 @@
 from sqlmodel import Session
 
 from app.dto import BMS_COMPLETE_RECORD
-from .model import BMS_Record
+from app.dto import BMS_ESSENTIAL_RECORD
+from .model import ANALOG_RECORD
 
 
 def creat_record(session: Session, data: BMS_COMPLETE_RECORD):
-    new_record = BMS_Record(
-        soc=data.soc,
-        current=data.current,
-        batt_volt=data.batt_volt,
-        remain_cap=data.remain_cap,
-        full_cap=data.full_cap,
-        env_temp=data.env_temp,
-        pack_temp=data.pack_temp,
-        nb_cycle=data.nb_cycle,
-    )
+    new_record = ANALOG_RECORD(**data.model_dump())
     session.add(new_record)
     session.commit()
+    session.refresh(new_record)
+    return BMS_ESSENTIAL_RECORD(**new_record.__dict__)

@@ -20,16 +20,20 @@ class DateTimeWithTz(TypeDecorator):
         return pytz.UTC.localize(value)
 
 
-class BMS_Record(SQLModel, table=True):
+class ANALOG_RECORD(SQLModel, table=True):
+
+    __tablename__ = "analog_record"
+
     id: int | None = Field(default=None, primary_key=True)
     soc: Decimal = Field(default=0, max_digits=5, decimal_places=2)
     current: Decimal = Field(default=0, max_digits=4, decimal_places=2)
     batt_volt: Decimal = Field(default=0, max_digits=4, decimal_places=2)
     remain_cap: Decimal = Field(default=0, max_digits=5, decimal_places=2)
     full_cap: Decimal = Field(default=0, max_digits=5, decimal_places=2)
-    env_temp: Decimal = Field(default=0, max_digits=3, decimal_places=1)
-    pack_temp: Decimal = Field(default=0, max_digits=3, decimal_places=1)
+    env_temp: int = Field(default=0, max_digits=3, decimal_places=1)
+    pack_temp: int = Field(default=0, max_digits=3, decimal_places=1)
     nb_cycle: int = Field(default=0)
+    soh: int = Field(default=0)
     created_at: datetime = Field(
         default=None,
         sa_column=Column(type_=DateTimeWithTz, server_default=func.now()),
