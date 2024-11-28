@@ -3,7 +3,7 @@ from app import get_config
 
 
 DB_URL = "mysql+pymysql://root:mypassword@localhost:3306/bms"
-engine = create_engine(DB_URL, echo=False)
+engine = create_engine(DB_URL, echo=False, pool_recycle=1800, pool_pre_ping=True)
 
 config = get_config()
 
