@@ -1,9 +1,8 @@
-from dataclasses import dataclass
 from typing import List
+from pydantic import BaseModel
 
 
-@dataclass
-class BMS_COMPLETE_RECORD:
+class BMS_COMPLETE_RECORD(BaseModel):
     soc: float = None
     batt_volt: float = None
     cells_v: List[float] = None
@@ -13,6 +12,6 @@ class BMS_COMPLETE_RECORD:
     mos_temp: int = None
     current: float = None
     soh: int = None
-    full_cap: int = None
-    remain_cap: int = None
+    full_cap: float = None
+    remain_cap: float = None
     nb_cycle: int = None
