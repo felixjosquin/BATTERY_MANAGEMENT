@@ -13,7 +13,6 @@ def bms_request(ser: SerialManager, cid2: bytes, **kwargs) -> Tuple[bool, bytes]
         sucess_encode, input = bms_encode_data(cid2, **kwargs)
         if not sucess_encode:
             return False, b""
-        print(input)
         sucess_request, response = ser.request(input)
         if not sucess_request:
             return False, b""
