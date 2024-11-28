@@ -8,7 +8,7 @@ from app.dto import BMS_COMPLETE_RECORD, BMS_ESSENTIAL_RECORD
 from .model import ANALOG_RECORD
 
 
-def creat_record(session: Session, data: BMS_COMPLETE_RECORD):
+def creat_record(session: Session, data: BMS_COMPLETE_RECORD) -> BMS_ESSENTIAL_RECORD:
     new_record = ANALOG_RECORD(**data.model_dump())
     session.add(new_record)
     session.commit()
