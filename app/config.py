@@ -6,12 +6,14 @@ class Config:
     LOGING_LEVEL = logging.ERROR
     SKIP_SERIAL_CALL = False
     DROP_TABLES_BEFORE_STARTING = False
+    ECHO_ENGINE = False
 
 
 class DevelopmentConfig(Config):
     LOGING_LEVEL = logging.DEBUG
     SKIP_SERIAL_CALL = True
     DROP_TABLES_BEFORE_STARTING = True
+    ECHO_ENGINE = True
 
 
 class ProductionConfig(Config):
