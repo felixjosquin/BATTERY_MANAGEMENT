@@ -38,3 +38,30 @@ class ANALOG_RECORD(SQLModel, table=True):
         default=None,
         sa_column=Column(type_=DateTimeWithTz, server_default=func.now()),
     )
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class ANALOG_RECORDS(Base):
+
+    __tablename__ = "analog_records"
+
+    id = Column(Integer, primary_key=True)
+    soc = Column(Float, default=0)
+    current = Column(Float, default=0)
+    batt_volt = Column(Float, default=0)
+    remain_cap = Column(Float, default=0)
+    full_cap = Column(Float, default=0)
+    env_temp = Column(Integer, default=0)
+    pack_temp = Column(Integer, default=0)
+    nb_cycle = Column(Integer, default=0)
+    soh = Column(Integer, default=0)
+    created_at = Column(type_=DateTimeWithTz, server_default=func.now())
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
