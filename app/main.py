@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from fastapi import Depends, FastAPI, Request, responses
 from contextlib import asynccontextmanager
 from typing import Annotated, Union
-from sqlmodel import Session
+from sqlalchemy.orm import Session
 
 from app.bms import SerialManager
 from app.database import get_db, create_db_and_tables

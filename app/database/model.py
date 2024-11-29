@@ -1,10 +1,9 @@
 import pytz
-from decimal import Decimal
 from datetime import datetime
 from typing import Optional
-from sqlmodel import Field, SQLModel
-from sqlalchemy import func, Column
+from sqlalchemy import Float, Integer, Numeric, func, Column
 from sqlalchemy.types import TypeDecorator, DateTime
+from sqlalchemy.orm import DeclarativeBase
 
 
 class DateTimeWithTz(TypeDecorator):
@@ -18,26 +17,6 @@ class DateTimeWithTz(TypeDecorator):
         if value is None:
             return value
         return pytz.UTC.localize(value).astimezone(pytz.timezone("Europe/Paris"))
-
-
-class ANALOG_RECORD(SQLModel, table=True):
-
-    __tablename__ = "analog_record"
-
-    id: int | None = Field(default=None, primary_key=True)
-    soc: Decimal = Field(default=0, max_digits=5, decimal_places=2)
-    current: Decimal = Field(default=0, max_digits=4, decimal_places=2)
-    batt_volt: Decimal = Field(default=0, max_digits=4, decimal_places=2)
-    remain_cap: Decimal = Field(default=0, max_digits=5, decimal_places=2)
-    full_cap: Decimal = Field(default=0, max_digits=5, decimal_places=2)
-    env_temp: int = Field(default=0, max_digits=3, decimal_places=1)
-    pack_temp: int = Field(default=0, max_digits=3, decimal_places=1)
-    nb_cycle: int = Field(default=0)
-    soh: int = Field(default=0)
-    created_at: datetime = Field(
-        default=None,
-        sa_column=Column(type_=DateTimeWithTz, server_default=func.now()),
-    )
 
 
 class Base(DeclarativeBase):

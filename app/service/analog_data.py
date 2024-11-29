@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-import pytz
-from sqlmodel import Session
+from sqlalchemy.orm import Session
 from app.bms import get_analog_data, SerialManager
 from app.database import creat_record
 from app.database import get_analog_data_between_dates
