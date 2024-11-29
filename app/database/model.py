@@ -17,7 +17,7 @@ class DateTimeWithTz(TypeDecorator):
     def process_result_value(self, value: Optional[datetime], dialect):
         if value is None:
             return value
-        return pytz.UTC.localize(value)
+        return pytz.UTC.localize(value).astimezone(pytz.timezone("Europe/Paris"))
 
 
 class ANALOG_RECORD(SQLModel, table=True):
