@@ -81,7 +81,7 @@ def get_analog_data(ser: SerialManager) -> Tuple[bool, BMS_COMPLETE_RECORD]:
     return True, analog_value
 
 
-def get_unsigned_value(hexstr: str):
+def get_unsigned_value(hexstr: str) -> int:
     value = int(hexstr, 16)
     if value & (1 << 15):
         value -= 1 << 16

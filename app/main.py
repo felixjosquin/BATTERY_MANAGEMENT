@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.bms_client import SerialManager
 from app.database import get_db, create_db_and_tables
 from app.service import get_current_data
-from app.service.analog_data import get_data_beetween_dates
+from app.service import get_analog_data_between_dates
 
 
 SERIAL_PORT = "/dev/ttyUSB0"
@@ -38,4 +38,4 @@ def get_analog_value(
     end_date: Union[datetime, None] = None,
     start_date: Union[datetime, None] = None,
 ):
-    return get_data_beetween_dates(db, end_date, start_date)
+    return get_analog_data_between_dates(db, end_date, start_date)
