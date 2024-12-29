@@ -1,15 +1,14 @@
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from app.bms import get_analog_data, SerialManager
+from app.bms_client import get_analog_data, SerialManager
 from app.database import creat_record
 from app.database import get_analog_data_between_dates
-from .custom_exceptions import CustomException
 
 
 def get_current_data(db: Session, ser: SerialManager):
     sucess, analog_completed_value = get_analog_data(ser)
     if not sucess:
-        raise CustomException("Not successfully get analog data")
+        raise Exception("Not successfully get analog data")
     creat_record(db, analog_completed_value)
     return analog_completed_value
 

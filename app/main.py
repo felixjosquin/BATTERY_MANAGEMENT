@@ -4,9 +4,9 @@ from contextlib import asynccontextmanager
 from typing import Annotated, Union
 from sqlalchemy.orm import Session
 
-from app.bms import SerialManager
+from app.bms_client import SerialManager
 from app.database import get_db, create_db_and_tables
-from app.service import CustomException, get_current_data
+from app.service import get_current_data
 from app.service.analog_data import get_data_beetween_dates
 
 
@@ -25,13 +25,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
-
-@app.exception_handler(CustomException)
-async def custom_exception_handler(request: Request, exc: CustomException):
-    return responses.JSONResponse(
-        status_code=500, content={"message": f"Error occurred - {exc.detail}"}
-    )
 
 
 @app.get("/")
