@@ -10,16 +10,13 @@ from .serial_manager import SerialManager
 logger = logging.getLogger(__name__)
 
 
-def get_analog_data(ser: SerialManager) -> Tuple[bool, BMS_COMPLETE_RECORD]:
+def get_analog_data(ser: SerialManager) -> BMS_COMPLETE_RECORD:
 
-    sucess, info = bms_request(
+    info = bms_request(
         ser=ser,
         cid2=CID2_VALUES[BMS_COMMAND.GET_ANALOG_VALUE],
         info=b"01",
     )
-
-    if not sucess:
-        return False
 
     analog_value = BMS_COMPLETE_RECORD()
 
@@ -78,7 +75,7 @@ def get_analog_data(ser: SerialManager) -> Tuple[bool, BMS_COMPLETE_RECORD]:
         f"Analog Data received and decode   SOC: {analog_value.soc} %   Battery Voltage: {analog_value.batt_volt} V   Current: {analog_value.current} A"
     )
 
-    return True, analog_value
+    return analog_value
 
 
 def get_unsigned_value(hexstr: str) -> int:
