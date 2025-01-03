@@ -12,7 +12,7 @@ class PayloadType(Enum):
     INT_4_BYTES = auto()
 
 
-lenght_payload_type = {
+LENGHT_BYTE_TYPE = {
     PayloadType.UNSIGNED_FLOAT: 4,
     PayloadType.SIGNED_FLOAT: 4,
     PayloadType.TEMP: 4,
@@ -44,7 +44,7 @@ def bms_extract_data(payload: bytes):
     offset = 0
     for name, type, config in get_data:
         offset += config.get("off", 0)
-        len_type = lenght_payload_type.get(type)
+        len_type = LENGHT_BYTE_TYPE.get(type)
         if not len_type:
             raise BmsException(section="Extract data", cause=f"Unknow type {type}")
         if config.get("list", False):
@@ -64,6 +64,7 @@ def bms_extract_data(payload: bytes):
             offset += len_type
         if offset > len(payload):
             raise BmsException(section="Extract data", cause=f"Payload too short")
+    return result
 
 
 def extract_value(raw_data, type):
