@@ -1,3 +1,4 @@
+from functools import lru_cache
 import logging
 import serial
 from typing import Tuple
@@ -5,10 +6,13 @@ from typing import Tuple
 from app import get_config
 from app.bms_client.bms_exception import BmsException
 
-from .bms_values import BMS_DEV_REPONSE, EOI
+from .bms_const import BMS_DEV_REPONSE, EOI
 
 logger = logging.getLogger(__name__)
 config = get_config()
+
+SERIAL_PORT = "/dev/ttyUSB0"
+BAUD_RATE = 9600
 
 
 class SerialManager:
@@ -52,3 +56,19 @@ class SerialManager:
                 section="Serial communication", cause="No response from battery"
             )
         return data_rcv
+
+
+@lru_cache
+def get_settings():
+    return Settings()
+
+
+serial_manager = SerialManager(SERIAL_PORT, BAUD_RATE)
+
+
+def open_serial():
+    serial_manager.open()
+
+
+def close_serial():
+    serial_manager.close()

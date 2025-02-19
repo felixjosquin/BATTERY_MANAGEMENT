@@ -5,17 +5,50 @@ from app.bms_client.bms_exception import BmsException
 from app.config import get_config
 
 from .serial_manager import SerialManager
-from .bms_values import RTN_ERRORS, SOI, EOI
+from .bms_const import RTN_ERRORS, SOI, EOI
+from typing import List, Tuple
+
+from .bms_const import EXTRACT_DATA_ORDER, LENGHT_BYTE_BY_DATA_FORMAT, RETURN_TYPE
+from .bms_exception import BmsException
+from .bms_types import BMS_COMMAND, DATA_FORMAT
 
 logger = logging.getLogger(__name__)
 config = get_config()
 
 
-def bms_request(ser: SerialManager, cid2: bytes, **kwargs) -> bytes:
-    input = bms_encode_data(cid2, **kwargs)
-    response = ser.request(input)
-    info = bms_decode_data(response)
-    return info
+def bms_encode_data(
+    cid2: bytes,
+    info: bytes = b"",
+    ver: bytes = b"\x32\x32",
+    adr: bytes = b"\x30\x31",
+    cid1: bytes = b"\x34\x41",
+) -> bytes:
+    request = SOI
+    request += ver
+    request += adr
+    request += cid1
+    if not cid2:
+        logger.error(f"Error encode data - No CID2")
+        raise BmsException(cause="No CID2", section="Encode data")
+    request += cid2
+    lenid = bytes(format(len(info), "03X"), "ASCII")
+    lchecksum = bytes(lchksum_calc(lenid), "ASCII")
+    if not lchecksum:
+        logger.error(f"Error encode data - Error calcul LCHEKSUM")
+        raise BmsException(cause="Error calcul LCHEKSUM", section="Encode data")
+    logger.debug(f"Encode data - calcul {lchecksum=} with {lenid=}")
+    request += lchecksum
+    request += lenid
+    request += info
+
+    checksum = bytes(chksum_calc(request[1:]), "ASCII")
+    if not checksum:
+        logger.error(f"Error encode data - Error calcul CHEKSUM")
+        raise BmsException(cause="Error calcul CHEKSUM", section="Encode data")
+    logger.debug(f"Encode data - calcul {checksum=} with {request=}")
+    request += checksum
+    request += EOI
+    return request
 
 
 def bms_decode_data(inc_data: bytes) -> bytes:
@@ -69,39 +102,32 @@ def bms_decode_data(inc_data: bytes) -> bytes:
     return INFO
 
 
-def bms_encode_data(
-    cid2: bytes,
-    info: bytes = b"",
-    ver: bytes = b"\x32\x32",
-    adr: bytes = b"\x30\x31",
-    cid1: bytes = b"\x34\x41",
-) -> bytes:
-    request = SOI
-    request += ver
-    request += adr
-    request += cid1
-    if not cid2:
-        logger.error(f"Error encode data - No CID2")
-        raise BmsException(cause="No CID2", section="Encode data")
-    request += cid2
-    lenid = bytes(format(len(info), "03X"), "ASCII")
-    lchecksum = bytes(lchksum_calc(lenid), "ASCII")
-    if not lchecksum:
-        logger.error(f"Error encode data - Error calcul LCHEKSUM")
-        raise BmsException(cause="Error calcul LCHEKSUM", section="Encode data")
-    logger.debug(f"Encode data - calcul {lchecksum=} with {lenid=}")
-    request += lchecksum
-    request += lenid
-    request += info
-
-    checksum = bytes(chksum_calc(request[1:]), "ASCII")
-    if not checksum:
-        logger.error(f"Error encode data - Error calcul CHEKSUM")
-        raise BmsException(cause="Error calcul CHEKSUM", section="Encode data")
-    logger.debug(f"Encode data - calcul {checksum=} with {request=}")
-    request += checksum
-    request += EOI
-    return request
+def bms_extract_data(payload: bytes, command: BMS_COMMAND):
+    result = dict()
+    offset = 0
+    for name, type, config in EXTRACT_DATA_ORDER[command]:
+        offset += config.get("off", 0)
+        len_type = LENGHT_BYTE_BY_DATA_FORMAT.get(type)
+        if not len_type:
+            raise BmsException(section="Extract data", cause=f"Unknow type {type}")
+        if config.get("list", False):
+            len_list = result.get(config["list"])
+            if not len_list:
+                raise BmsException(
+                    section="Extract data", cause=f"Unknow key {config["list"]}"
+                )
+            lenght = len_list * len_type
+            result[name] = [
+                extract_value(payload[offset + i : offset + i + len_type], type)
+                for i in range(0, lenght, len_type)
+            ]
+            offset += lenght
+        else:
+            result[name] = extract_value(payload[offset : offset + len_type], type)
+            offset += len_type
+        if offset > len(payload):
+            raise BmsException(section="Extract data", cause=f"Payload too short")
+    return RETURN_TYPE[command](**result)
 
 
 def lchksum_calc(lenid: bytes) -> str:
@@ -124,3 +150,21 @@ def chksum_calc(data: bytes) -> str:
     except Exception as e:
         logger.exception(f"Error calculating CHKSUM using {data=}")
         return ""
+
+
+def extract_value(raw_data, type) -> int | float:
+    if type == DATA_FORMAT.UNSIGNED_FLOAT:
+        return int(raw_data, 16) / 100.0
+    elif type == DATA_FORMAT.SIGNED_FLOAT:
+        value = int(raw_data, 16)
+        if value & (1 << 15):
+            value -= 1 << 16
+        return value / 100.0
+    elif type == DATA_FORMAT.TEMP:
+        return int(raw_data, 16) / 10
+    elif type == DATA_FORMAT.INT_2_BYTES:
+        return int(raw_data, 16)
+    elif type == DATA_FORMAT.INT_4_BYTES:
+        return int(raw_data, 16)
+    else:
+        raise BmsException(section="Extract data", cause=f"Unknow {type=}")
